@@ -1,5 +1,6 @@
 @charset "utf-8";
 @import "~bulma/bulma.sass";
+
 body {
   margin: 0;
   padding: 0;
@@ -13,4 +14,11 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.main-header {
+    color: $primary;
+    font-size: $size-1;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
