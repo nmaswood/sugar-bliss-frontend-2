@@ -5,6 +5,7 @@ export interface FoodObject {
 
 export interface FoodQuantity {
   camel: string;
+  display: string;
   quantity: Number;
 }
 
@@ -20,3 +21,5 @@ export interface InputSelection {
   zipcode: string;
   foods: FoodQuantity[];
 }
+
+export interface ServerInput extends Object {}

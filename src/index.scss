@@ -17,8 +17,22 @@ code {
 }
 
 .main-header {
-    color: $primary;
+    color: black;
+    background: lightgray;
+    margin-bottom: 50px;
     font-size: $size-1;
     padding-top: 50px;
     padding-bottom: 50px;
+}
+.main-form {
+    width: 710px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.final-submit-button{
+    padding-top: 50px;
+}
+
+input{
+    @extend .input;
 }
