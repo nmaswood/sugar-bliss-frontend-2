@@ -22,4 +22,33 @@ export interface InputSelection {
   foods: FoodQuantity[];
 }
 
-export interface ServerInput extends Object {}
+export type ServerInput = Record<string, string>;
+
+export type Carrier = "ld" | "usm";
+
+export interface CarrierPrice {
+  carrier: string;
+  date: string;
+  price: Number;
+  time: string;
+}
+
+export interface PriceResult {
+  ld: Carrier;
+  usm: Carrier;
+  ld_dict: Record<string, number>;
+  usm_dict: Record<string, number>;
+}
+
+export interface ServerResponse {
+  carrierDicts: CarrierPrice[];
+  priceResult: {
+    ld: number;
+    usm: number;
+    ldDict: Record<string, number>;
+    usmDict: Record<string, number>;
+  };
+  cheapest: CarrierPrice;
+  finalPrice: number;
+  valid: boolean;
+}

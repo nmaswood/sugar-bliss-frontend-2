@@ -19,7 +19,7 @@ function toServerInput(inputSelection: InputSelection): ServerInput {
     const { camel, quantity } = food;
     obj[camel] = quantity.toString();
   });
-  obj.zipCode = zipcode;
+  obj.zipcode = zipcode;
   obj.dateTime = date.toISOString().split("T")[0];
   obj.time = time;
   return obj;
