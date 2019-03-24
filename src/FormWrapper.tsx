@@ -1,12 +1,13 @@
 import * as React from "react";
 import axios from "axios";
 import { InfoForm } from "./InfoForm";
+import { ErrorMessage } from "./ErrorMessage";
 import { ServerOutput, ServerInfo, ServerInput, InputSelection } from "./Types";
 interface Props {}
 
 interface State {
   loading: Boolean;
-  error?: string;
+  errors: string[];
   serverInfo?: ServerInfo;
   serverInput?: ServerInput;
   serverOutput?: ServerOutput;
@@ -31,7 +32,8 @@ export class FormWrapper extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      errors: []
     };
   }
 
@@ -48,30 +50,35 @@ export class FormWrapper extends React.PureComponent<Props, State> {
 
   onSubmit = async (input: InputSelection) => {
     const serverInput: ServerInput = toServerInput(input);
+    this.setState({ loading: true });
     try {
       const { data } = await axios.post(`${URL}/submit`, serverInput);
+      if (data.errors && data.errors.length) {
+        this.setState({
+          errors: data.errors,
+          loading: false
+        });
+        return;
+      }
+
       const serverOutput = data as ServerOutput;
-      debugger;
       this.setState({ serverInput, serverOutput, loading: false });
     } catch (error) {
-      this.setState({ error, loading: false });
+      this.setState({ errors: [error], loading: false });
     }
   };
 
   render() {
-    const { loading, serverInfo } = this.state;
+    const { loading, serverInfo, errors } = this.state;
     const { onSubmit } = this;
     if (loading) {
-      return (
-        <div>
-          <div>Loading...</div>
-        </div>
-      );
+      return <div> Loading ... </div>;
     }
 
     return (
       <div>
         <InfoForm serverInfo={serverInfo!} onSubmit={onSubmit} />
+        {errors.length > 0 && <ErrorMessage errors={errors} />}
       </div>
     );
   }

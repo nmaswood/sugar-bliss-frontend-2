@@ -17,13 +17,9 @@ code {
 }
 
 .main-header {
-    color: black;
-    background: lightgray;
     margin-bottom: 50px;
-    font-size: $size-1;
-    padding-top: 50px;
-    padding-bottom: 50px;
 }
+
 .main-form {
     width: 710px;
     margin-left:auto;
@@ -31,6 +27,7 @@ code {
 }
 .final-submit-button{
     padding-top: 50px;
+    margin-bottom: 50px;
 }
 
 input{
