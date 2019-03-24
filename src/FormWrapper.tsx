@@ -2,6 +2,7 @@ import * as React from "react";
 import axios from "axios";
 import { InfoForm } from "./InfoForm";
 import { ErrorMessage } from "./ErrorMessage";
+import { ServerResponseDisplay } from "./ErrorMessage";
 import { ServerOutput, ServerInfo, ServerInput, InputSelection } from "./Types";
 interface Props {}
 
@@ -69,7 +70,13 @@ export class FormWrapper extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { loading, serverInfo, errors } = this.state;
+    const {
+      loading,
+      serverInfo,
+      errors,
+      serverInput,
+      serverOutput
+    } = this.state;
     const { onSubmit } = this;
     if (loading) {
       return <div> Loading ... </div>;
@@ -79,6 +86,9 @@ export class FormWrapper extends React.PureComponent<Props, State> {
       <div>
         <InfoForm serverInfo={serverInfo!} onSubmit={onSubmit} />
         {errors.length > 0 && <ErrorMessage errors={errors} />}
+        {errors.length === 0 && serverOutput && (
+          <ServerResponseDisplay input={serverInput} output={serverOutput} />
+        )}
       </div>
     );
   }
