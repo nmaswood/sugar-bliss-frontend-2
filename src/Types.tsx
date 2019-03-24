@@ -40,7 +40,7 @@ export interface PriceResult {
   usm_dict: Record<string, number>;
 }
 
-export interface ServerResponse {
+export interface ServerOutput {
   carrierDicts: CarrierPrice[];
   priceResult: {
     ld: number;

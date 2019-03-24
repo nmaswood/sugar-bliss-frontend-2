@@ -1,13 +1,15 @@
 import * as React from "react";
 import axios from "axios";
-import { InfoForm } from "./Main";
-import { ServerInfo, ServerInput, InputSelection } from "./Types";
+import { InfoForm } from "./InfoForm";
+import { ServerOutput, ServerInfo, ServerInput, InputSelection } from "./Types";
 interface Props {}
 
 interface State {
   loading: Boolean;
   error?: string;
   serverInfo?: ServerInfo;
+  serverInput?: ServerInput;
+  serverOutput?: ServerOutput;
 }
 
 const URL = "http://localhost:8000";
@@ -47,10 +49,12 @@ export class FormWrapper extends React.PureComponent<Props, State> {
   onSubmit = async (input: InputSelection) => {
     const serverInput: ServerInput = toServerInput(input);
     try {
-      await axios.post(`${URL}/submit`, serverInput);
+      const { data } = await axios.post(`${URL}/submit`, serverInput);
+      const serverOutput = data as ServerOutput;
       debugger;
+      this.setState({ serverInput, serverOutput, loading: false });
     } catch (error) {
-      console.log(error);
+      this.setState({ error, loading: false });
     }
   };
 
