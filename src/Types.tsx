@@ -41,14 +41,13 @@ export interface PriceResult {
 }
 
 export interface ServerOutput {
-  carrierDicts: CarrierPrice[];
+  basePrice: CarrierPrice[];
+  total: CarrierPrice[];
   priceResult: {
     ld: number;
     usm: number;
     ldDict: Record<string, number>;
     usmDict: Record<string, number>;
   };
-  cheapest: CarrierPrice;
-  finalPrice: number;
   valid: boolean;
 }

@@ -12,8 +12,10 @@ export class ErrorMessage extends React.PureComponent<Props, State> {
 
     return (
       <article className="message is-danger">
-        {errors.map(message => (
-          <div className="message-body">{message}</div>
+        {errors.map((message, idx) => (
+          <div className="message-body" key={idx}>
+            {message}
+          </div>
         ))}
       </article>
     );

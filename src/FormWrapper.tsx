@@ -2,19 +2,36 @@ import * as React from "react";
 import axios from "axios";
 import { InfoForm } from "./InfoForm";
 import { ErrorMessage } from "./ErrorMessage";
-import { ServerResponseDisplay } from "./ErrorMessage";
+import { ServerResponseDisplay } from "./ServerResponseDisplay";
 import { ServerOutput, ServerInfo, ServerInput, InputSelection } from "./Types";
 interface Props {}
 
 interface State {
   loading: Boolean;
   errors: string[];
+  inputSelection?: InputSelection;
   serverInfo?: ServerInfo;
-  serverInput?: ServerInput;
+  serverInput?: InputSelection;
   serverOutput?: ServerOutput;
 }
 
 const URL = "http://localhost:8000";
+
+function initInputSelection(serverInfo: ServerInfo): InputSelection {
+  const { foods, times, zipcodes } = serverInfo;
+
+  const foodQuantities = foods.map(obj => ({
+    ...obj,
+    quantity: 0
+  }));
+
+  return {
+    time: times[0],
+    date: new Date(),
+    zipcode: zipcodes[0],
+    foods: foodQuantities
+  };
+}
 
 function toServerInput(inputSelection: InputSelection): ServerInput {
   const obj: Record<string, string> = {};
@@ -29,7 +46,7 @@ function toServerInput(inputSelection: InputSelection): ServerInput {
   return obj;
 }
 
-export class FormWrapper extends React.PureComponent<Props, State> {
+export class FormWrapper extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -43,27 +60,30 @@ export class FormWrapper extends React.PureComponent<Props, State> {
     const {
       data: { data }
     } = await axios.get(apiURL);
+
+    const inputSelection = initInputSelection(data);
+
     this.setState({
       loading: false,
-      serverInfo: data
+      serverInfo: data,
+      inputSelection
     });
   }
 
   onSubmit = async (input: InputSelection) => {
     const serverInput: ServerInput = toServerInput(input);
-    this.setState({ loading: true });
+    this.setState({ loading: true, errors: [] });
     try {
       const { data } = await axios.post(`${URL}/submit`, serverInput);
       if (data.errors && data.errors.length) {
         this.setState({
-          errors: data.errors,
-          loading: false
+          loading: false,
+          errors: data.errors
         });
         return;
       }
-
       const serverOutput = data as ServerOutput;
-      this.setState({ serverInput, serverOutput, loading: false });
+      this.setState({ serverInput: input, serverOutput, loading: false });
     } catch (error) {
       this.setState({ errors: [error], loading: false });
     }
@@ -74,6 +94,7 @@ export class FormWrapper extends React.PureComponent<Props, State> {
       loading,
       serverInfo,
       errors,
+      inputSelection,
       serverInput,
       serverOutput
     } = this.state;
@@ -84,10 +105,15 @@ export class FormWrapper extends React.PureComponent<Props, State> {
 
     return (
       <div>
-        <InfoForm serverInfo={serverInfo!} onSubmit={onSubmit} />
+        <InfoForm
+          serverInfo={serverInfo!}
+          onSubmit={onSubmit}
+          inputSelection={inputSelection!}
+          setParentState={this.setState.bind(this)}
+        />
         {errors.length > 0 && <ErrorMessage errors={errors} />}
         {errors.length === 0 && serverOutput && (
-          <ServerResponseDisplay input={serverInput} output={serverOutput} />
+          <ServerResponseDisplay input={serverInput!} output={serverOutput!} />
         )}
       </div>
     );
